@@ -4,28 +4,43 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    bool GameRunning = true; // Variable to exit game loop when finished
+    /* 
+     * GameManager.cs, 2024
+     * GAD170.1, 1033478
+     */
+
+    [SerializeField]
+    private bool GameRunning = true; // Variable to exit game loop when finished
+
+    [SerializeField]
+    private bool isDebug = false; // For debug, I didn't include any debug stuff in the pseudocode, because admittedly I forgot about it, but I feel like that would be clunky to include.
+
+    [Space(20)]
 
     // Player variables
-    float player_healthPoints = 20.0f;
-    
-    float player_attackPoints = 2.0f;
-    float player_attackModifier = 1.0f;
+    public float playerHealthPoints = 20.0f;
 
-    int player_level = 1; 
+    public float playerAttackPoints = 2.0f;
+    public float playerAttackModifier = 1.0f;
 
-    float player_xp = 0.0f;
-    float player_xpModifier = 1.0f;
-    float player_xpThreshold = 5.0f;
+    public int playerLevel = 1;
+
+    public float playerXP = 0.0f;
+    public float playerXPModifier = 1.0f;
+    public float playerXPThreshold = 5.0f;
+
+    [Space(20)]
 
     // Enemy variables
-    float enemy_healthPoints = 15.0f;
-    float enemy_attackPoints = 2.0f;
-    int enemy_level = 1; 
+    public float enemyHealthPoints = 15.0f;
+    public float enemyMaxHealthPoints = 15.0f; // This is mostly there for display purposes. It just gets assigned the same value as enemyHealthPoints but doesn't get lowered.
+    public float enemyAttackPoints = 2.0f;
+    public int enemyLevel = 1; 
     
     #region Game start
     void Start()
     {
+        Debug.Log("[GAME] Welcome to the game! Press A to attack, and press L to level up.");
         NewEnemy();    
     }
     #endregion
@@ -39,25 +54,36 @@ public class GameManager : MonoBehaviour
              * used if(GameRunning == true) in place of While gameRunning = True Do as it will do the same thing
              */
 
-            if (player_healthPoints >= 1) // If HP is still above or equal to 1, continue loop.
+            if (playerHealthPoints >= 1) // If HP is still above or equal to 1, continue loop.
             {
-                if (player_level >= 5) // If player level is above or equal to 5, end game.
+                if (playerLevel >= 5) // If player level is above or equal to 5, end game.
                 {
-                    Debug.Log("You win! Game over.");
+                    if (isDebug == true) Debug.Log("[debug] Player is level 5 or above.");
+                    Debug.Log("[GAME] You win! Game over.");
                     GameRunning = false;
                 } else // If neither conditions are met, continue loop.
                 {
-                    if(Input.GetKeyDown(KeyCode.A)) // If press A, attack enemy.
+                    if (Input.GetKeyDown(KeyCode.A)) // If press A, attack enemy.
                     {
+                        if (isDebug == true) Debug.Log("[debug] Call AttackEnemy()");
                         AttackEnemy();
-                    } else if(Input.GetKeyDown(KeyCode.L)) // If press L, attempt to level up.
+                    }
+                    else if (Input.GetKeyDown(KeyCode.L)) // If press L, attempt to level up.
                     {
+                        if (isDebug == true) Debug.Log("[debug] Call LevelUp()");
                         LevelUp();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        // Simple debug toggle.
+                        isDebug = !isDebug;
+                        Debug.Log(isDebug ? "DEGREELESSNESS MODE ON" : "DEGREELESSNESS MODE OFF");
                     }
                 }
             } else
             {
-                Debug.Log("You died. Game over."); 
+                if (isDebug == true) Debug.Log("[debug] Player ran out of HP.");
+                Debug.Log("[GAME] You died. Game over."); 
                 GameRunning = false;
             }
         }
@@ -68,24 +94,43 @@ public class GameManager : MonoBehaviour
     void NewEnemy()
     {
         // Set random variables for enemy, and let player know new enemy has shown up.
-        enemy_level = Random.Range(1, 5);
-        enemy_healthPoints = 10.0f + (enemy_level * 5);
-        enemy_attackPoints = 2.0f * enemy_level; 
-        Debug.Log("A new level " + enemy_level + " imp appears!");
+        enemyLevel = Random.Range(1, 5);
+        if (isDebug == true) Debug.Log("[debug] Enemy level " + enemyLevel+ " rolled.");
+
+        enemyHealthPoints = 10.0f + (enemyLevel * 5);
+        enemyMaxHealthPoints = enemyHealthPoints;
+        if (isDebug == true) Debug.Log("[debug] Enemy health value " + enemyHealthPoints + " rolled.");
+
+        enemyAttackPoints = 2.0f * enemyLevel;
+        if (isDebug == true) Debug.Log("[debug] Enemy attack value " + enemyAttackPoints + " rolled.");
+
+        Debug.Log("[ENEMY] A new level " + enemyLevel + " imp appears from the bushes!");
     }
 
     void AttackEnemy()
     {
-        enemy_healthPoints = enemy_healthPoints - (player_attackPoints * player_attackModifier); // Damage enemy by attack point * attack modifier.
+        float tempDmgVal = playerAttackPoints * playerAttackModifier;
+        if (isDebug == true) Debug.Log("[debug] Enemy damaged by value " + tempDmgVal + ".");
 
-        if(enemy_healthPoints <= 0) // If enemy health below or equal to 0, increase XP and create new enemy.
+        enemyHealthPoints = enemyHealthPoints - tempDmgVal; // Damage enemy by attack point * attack modifier.
+
+        if(enemyHealthPoints <= 0) // If enemy health below or equal to 0, increase XP and create new enemy.
         {
-            Debug.Log("You killed the imp!");
+            Debug.Log("[ENEMY] You killed the imp!");
+
+            if (isDebug == true) Debug.Log("[debug] Call IncreaseXP()");
             IncreaseXP();
+
+            if (playerXP >= playerXPThreshold)
+            { // This part is not in the pseudocode but I realised mid-project that this would probably be a bit vague to the user if there was no popup.
+                Debug.Log("[XP] You have enough XP to level up. Press L to level up!");
+            }
+
+            if (isDebug == true) Debug.Log("[debug] Call NewEnemy()");
             NewEnemy();
         } else
         {
-            Debug.Log("IMP: " + enemy_healthPoints + " hp, " + enemy_attackPoints + " attack.");
+            Debug.Log("[IMP]: " + enemyHealthPoints + "/"+enemyMaxHealthPoints+" HP. " + enemyAttackPoints + " ATK.");
         }
 
     }
@@ -96,25 +141,39 @@ public class GameManager : MonoBehaviour
     {
         // Increase XP by 1 or 2 * xpModifier
 
-        float tempXPVal = Random.Range(1, 2) * player_xpModifier;
-        player_xp = player_xp + tempXPVal; 
-        Debug.Log("You gained " + tempXPVal + " XP!");
+        float tempXPVal = Random.Range(1, 2) * playerXPModifier;
+        if (isDebug == true) Debug.Log("[debug] XP value "+tempXPVal+" rolled.");
+        playerXP = playerXP + tempXPVal; 
+        Debug.Log("[XP] You gained " + tempXPVal + " XP.");
     }
 
     void LevelUp()
     {
-        if (player_xp >= player_xpThreshold) // If player_xp is equal to or above player_xpThreshold, continue.
+        if (playerXP >= playerXPThreshold) // If player_xp is equal to or above player_xpThreshold, continue.
         {
-            player_xpThreshold = player_xpThreshold + Random.Range(2, 8); // Increase XP threshold by 2-8 XP.
-            player_xpModifier = player_xpModifier + 0.25f; // Increase XP Modifier by 25%.
-            player_attackModifier = player_attackModifier + 0.25f; // Increase attack modifier by 25%.
-            player_healthPoints = player_healthPoints + (player_level * 5); // Increase health by player level * 5.
-            player_level = player_level + 1; // Increase player level.
-            Debug.Log("You leveled up! You are now level" + player_level + ".");
+            float tempThresVal = playerXPThreshold + Random.Range(2, 8);
+            playerXPThreshold = tempThresVal; // Increase XP threshold by 2-8 XP.
+            if (isDebug == true) Debug.Log("[debug] XP threshold value " + tempThresVal + " rolled.");
+
+            float tempXPModVal = playerXPModifier + 0.25f;
+            playerXPModifier = tempXPModVal; // Increase XP Modifier by 25%.
+            if (isDebug == true) Debug.Log("[debug] XP modifier value " + tempXPModVal + ".");
+
+            float tempAttackModVal = playerAttackModifier + 0.25f;
+            playerAttackModifier = tempAttackModVal; // Increase attack modifier by 25%.
+            if (isDebug == true) Debug.Log("[debug] Attack modifier value " + tempAttackModVal + ".");
+
+            float tempHealthPointVal = playerHealthPoints + (playerLevel * 5);
+            playerHealthPoints = tempHealthPointVal; // Increase health by player level * 5.
+            if (isDebug == true) Debug.Log("[debug] Health value " + tempHealthPointVal + ".");
+
+            playerLevel = playerLevel + 1; // Increase player level.
+            Debug.Log("[LEVEL UP] You are now level" + playerLevel + ".");
         }
         else
         {
-            Debug.Log("You do not have enough XP to level up.");
+            if (isDebug == true) Debug.Log("[debug] Player only has " + playerXP + " when " + playerXPThreshold + " is required.");
+            Debug.Log("[XP] You do not have enough XP to level up, you need "+(playerXPThreshold - playerXP) +" more XP to level up.");
         }
     }
     #endregion
