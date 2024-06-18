@@ -26,6 +26,9 @@ public class CanvasHandler : MonoBehaviour
             case 2:
                 prefix = "<b>[<color=orange>XP</color>]</b>";
                 break;
+            case 3:
+                prefix = "<b>[<color=red>PLAYER</color>]</b>";
+                break;
             case 5:
                 prefix = "<b>["+customOutType+"]</b>";
                 break;
