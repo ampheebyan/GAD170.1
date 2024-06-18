@@ -34,19 +34,7 @@ public class CanvasHandler : MonoBehaviour
                 break;
         }
         _inputField.text = _inputField.text + prefix + " " + text + Environment.NewLine; // Helper function to add to inputField freely.
-
-        StartCoroutine(_goToBottom());
-    }
-
-    IEnumerator _goToBottom()
-    {
-        // https://discussions.unity.com/t/after-adding-text-to-an-input-field-i-want-focus-to-set-the-caret-to-the-end/165830
-        yield return new WaitForFixedUpdate();
-
         _sBar.value = 1;
-
-        _inputField.caretPosition = _inputField.text.Length;
-        _inputField.ForceLabelUpdate(); // This is what I was missing for some time.
     }
 
     public void ClearField()

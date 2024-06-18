@@ -40,10 +40,10 @@ public class GameManager : MonoBehaviour
 
             if (_player.playerHealthPoints >= 1) // If HP is still above or equal to 1, continue loop.
             {
-                if (_player.playerLevel >= 15) // If player level is above or equal to 15, end game.
+                if (_player.playerLevel >= 8) // If player level is above or equal to 8, end game.
                 {
-                    if (isDebug == true) Debug.Log("[debug] Player is level 15 or above.");
-                    _cHandler.AppendToField("You win! Game over.", 0);
+                    if (isDebug == true) Debug.Log("[debug] Player is level 8 or above.");
+                    _cHandler.AppendToField("You are now level 8, <size=45>you win!</size>", 0);
                     GameRunning = false;
                 } else // If neither conditions are met, continue loop.
                 {

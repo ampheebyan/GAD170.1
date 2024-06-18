@@ -28,8 +28,8 @@ public class EnemyHandler : MonoBehaviour
                 currentEnemy.healthPoints = 10;
                 currentEnemy.maxHealthPoints = 10;
                 currentEnemy.attackPoints = 1;
-                currentEnemy.minAttackPoints = 1;
-                currentEnemy.maxAttackPoints = 3;
+                currentEnemy.minAttackPoints = _player.playerLevel >= 4 ? 2 : 1;
+                currentEnemy.maxAttackPoints = _player.playerLevel >= 4 ? 3 : 2;
                 break;
             case "Cacodemon":
                 if(_player.playerLevel >= 3)
@@ -40,8 +40,8 @@ public class EnemyHandler : MonoBehaviour
                     currentEnemy.healthPoints = 15;
                     currentEnemy.maxHealthPoints = 15;
                     currentEnemy.attackPoints = 1;
-                    currentEnemy.minAttackPoints = 2;
-                    currentEnemy.maxAttackPoints = 5;
+                    currentEnemy.minAttackPoints = _player.playerLevel >= 5 ? 3 : 2;
+                    currentEnemy.maxAttackPoints = _player.playerLevel >= 5 ? 5 : 4;
                 } else
                 {
                     _temp = true; // If player is not level 3 or higher, stop. New enemy.
@@ -57,8 +57,8 @@ public class EnemyHandler : MonoBehaviour
                     currentEnemy.healthPoints = 20;
                     currentEnemy.maxHealthPoints = 20;
                     currentEnemy.attackPoints = 1;
-                    currentEnemy.minAttackPoints = 3;
-                    currentEnemy.maxAttackPoints = 7;
+                    currentEnemy.minAttackPoints = _player.playerLevel >= 8 ? 5 : 3;
+                    currentEnemy.maxAttackPoints = _player.playerLevel >= 8 ? 7 : 5;
                 } else
                 {
                     _temp = true; // If player is not level 6 or higher, stop. New enemy.
