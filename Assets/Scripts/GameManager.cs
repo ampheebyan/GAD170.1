@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     public float playerHealthPoints = 20.0f;
 
     public float playerAttackPoints = 2.0f;
-    public float playerAttackModifier = 1.0f;
 
     public int playerLevel = 1;
 
@@ -109,7 +108,7 @@ public class GameManager : MonoBehaviour
 
     void AttackEnemy()
     {
-        float tempDmgVal = playerAttackPoints * playerAttackModifier;
+        float tempDmgVal = playerAttackPoints;
         if (isDebug == true) Debug.Log("[debug] Enemy damaged by value " + tempDmgVal + ".");
 
         enemyHealthPoints = enemyHealthPoints - tempDmgVal; // Damage enemy by attack point * attack modifier.
@@ -159,9 +158,9 @@ public class GameManager : MonoBehaviour
             playerXPModifier = tempXPModVal; // Increase XP Modifier by 25%.
             if (isDebug == true) Debug.Log("[debug] XP modifier value " + tempXPModVal + ".");
 
-            float tempAttackModVal = playerAttackModifier + 0.25f;
-            playerAttackModifier = tempAttackModVal; // Increase attack modifier by 25%.
-            if (isDebug == true) Debug.Log("[debug] Attack modifier value " + tempAttackModVal + ".");
+            float tempAttackModVal = playerAttackPoints + (playerAttackPoints * 0.25f);
+            playerAttackPoints = tempAttackModVal; // Increase attack points by 25%.
+            if (isDebug == true) Debug.Log("[debug] Attack points value increased to " + tempAttackModVal + ".");
 
             float tempHealthPointVal = playerHealthPoints + (playerLevel * 5);
             playerHealthPoints = tempHealthPointVal; // Increase health by player level * 5.
