@@ -167,6 +167,8 @@ public class GameManager : MonoBehaviour
             if (isDebug == true) Debug.Log("[debug] Health value " + tempHealthPointVal + ".");
 
             playerLevel = playerLevel + 1; // Increase player level.
+            playerXP = 0f; // Clear XP.
+
             Debug.Log("[LEVEL UP] You are now level" + playerLevel + ".");
         }
         else
